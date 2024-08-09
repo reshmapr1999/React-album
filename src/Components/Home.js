@@ -1,9 +1,11 @@
 import React from 'react'
 import { useState,useEffect } from 'react'
 import axios from 'axios'
-import {AlbumForm} from './AlbumForm';
+import AlbumForm from './AlbumForm';
 import AlbumCard from './AlbumCard';
 import './Home.css';
+import { toast} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function Home() {
     const [albums,setAlbums] = useState([]);
     const [newAlbumTitle, setNewAlbumTitle] = useState('');
@@ -26,39 +28,41 @@ function Home() {
     const addAlbum = async ()=>{
         try{
             
-          const newId = albums.length > 0 ? albums[albums.length - 1].id + 1 : 1;
+          const newId = albums.length > 0 ? Math.max(...albums.map((a) => a.id)) + 1 : 1;
           const newAlbum = {
             id: newId, // Assign the new unique ID
             title: newAlbumTitle,
             userId: parseInt(userId),
           };
-            const response = await axios.post('https://jsonplaceholder.typicode.com/albums',{
-                id:newId,
-                title: newAlbumTitle,
-                userId: parseInt(userId),
-            });
+            await axios.post('https://jsonplaceholder.typicode.com/albums',newAlbum);
             // Since it's a dummy call, we'll add the new album to our state
             setAlbums([...albums, newAlbum]);
             setNewAlbumTitle('');
             setUserId('');
+            toast.success("Album Added Sucessfully");
         }catch (error) {
             console.error('Error adding album:', error);
           }
     };
 
-    const updateAlbum = async (id, newTitle) => {
+    const updateAlbum = async (album, newTitle) => {
       try {
-        const response = await axios.put(`https://jsonplaceholder.typicode.com/albums/${id}`, {
+        const albumUpdated = {
+          id:album.id,
           title: newTitle,
-          userId: parseInt(userId),
-        });
+          userId: album.userId,
+        };
         // Update the album in our state
         setAlbums(
-          albums.map((album) => (album.id === id ? response.data : album))
+          albums.map((a) => (a.id === album.id ?  albumUpdated  : a))
         );
         setEditingAlbum(null);
         setNewAlbumTitle(''); // Clear the title input
         setUserId(''); // Clear the userId if needed
+      await axios.put(`https://jsonplaceholder.typicode.com/albums/${album.id}`, albumUpdated);
+        
+        
+        toast.info("Album Updated Sucessfully");
       } catch (error) {
         console.error('Error updating album:', error);
       }
@@ -69,18 +73,21 @@ function Home() {
         await axios.delete(`https://jsonplaceholder.typicode.com/albums/${id}`);
         // Remove the album from our state
         setAlbums(albums.filter((album) => album.id !== id));
+        toast.error("Album Deleted Sucessfully");
       } catch (error) {
         console.error('Error deleting album:', error);
       }
     };
+
     const handleEdit = (album) => {
-      setEditingAlbum(album.id); // Set the album being edited
+      setEditingAlbum(album); // Set the album being edited
       setNewAlbumTitle(album.title); // Populate the input field with the current album title
       setUserId(album.userId); // Optionally set userId if needed
     };
 
   return (
     <div className='display'>
+     
         <AlbumForm
           userId={userId}
           setUserId={setUserId}
@@ -94,11 +101,12 @@ function Home() {
         <AlbumCard key={album.id}
           i={i}
           title={album.title} 
-          id={album.id}  
-          setEditingAlbum={handleEdit}
+          album={album} 
+          handleEdit={handleEdit}
           deleteAlbum={deleteAlbum}
-          updateAlbum={updateAlbum} />
+           />
       ))}
+       
     </div>
   )
 }

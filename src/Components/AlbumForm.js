@@ -1,11 +1,15 @@
 import React from 'react'
 import './Albumform.css'
-
-export const  AlbumForm = ({ userId, setUserId, newAlbumTitle, setNewAlbumTitle, addAlbum,updateAlbum,editingAlbum }) =>{
+import { toast,ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+const  AlbumForm = ({ userId, setUserId, newAlbumTitle, setNewAlbumTitle, addAlbum,updateAlbum,editingAlbum }) =>{
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (editingAlbum) {
+    if (newAlbumTitle.trim() === '') {
+      toast.error("please enter a title");
+    }
+    else if (editingAlbum) {
         // If editing, call updateAlbum
         updateAlbum(editingAlbum, newAlbumTitle); // Pass the current editing album ID and new title
     } else {
@@ -15,6 +19,7 @@ export const  AlbumForm = ({ userId, setUserId, newAlbumTitle, setNewAlbumTitle,
 };
   return (
       <form className='albumForm' onSubmit={handleSubmit}>
+        
         <h4 style={{color: 'wheat'}}>{editingAlbum ? 'Edit Album' : 'Add Album'}</h4>
           <input className='formInput'
           type="text"
@@ -31,8 +36,9 @@ export const  AlbumForm = ({ userId, setUserId, newAlbumTitle, setNewAlbumTitle,
           onChange={(e) => setNewAlbumTitle(e.target.value)}
           />
           <button className="sub-btn" type='submit'>{editingAlbum ? 'Edit Album' : 'Add Album'}</button>
+          <ToastContainer />
     </form>
   )
 }
 
-
+export default AlbumForm;
