@@ -1,0 +1,13 @@
+.nav{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+   background-color: #921A40;
+    height: 75px;
+}
+.brand{
+   font-weight: bold;
+   font-family: 'Times New Roman', Times, serif;
+   font-size:35px;
+   color:bisque ;
+}

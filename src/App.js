@@ -1,23 +1,25 @@
-import logo from './logo.svg';
+
 import './App.css';
+import AlbumManager from './Components/AlbumManager';
+import Navbarcomponent from './Components/Navbarcomponent';
+import AlbumCard from './Components/AlbumCard';
+import Home from './Components/Home';
+
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {/* <header className='header'>
+        <h1>Album List</h1>
+        </header> */}
+      <Navbarcomponent/>
+    {/* <AlbumManager/> */}
+    {/* <AlbumCard/> */}
+    <Home/>
+      
+    
+
     </div>
   );
 }
